@@ -1,0 +1,36 @@
+---
+title: "Predicting Quality of Red Wine"
+author: "Lena Nguyen"
+output: 
+  html_document:
+    theme: 'flatly'
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(include = FALSE, echo = FALSE)
+
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(caret)
+library(here)
+```
+## Introduction
+There are two datasets are related to red and white variants of the Portuguese "Vinho Verde" wine. We first want to explore the datasets and look at what chemical properties correlate with a higher wine quality taste. For the purposes of this exercise, I will focus on the dataset for red wines.
+
+```{r load_data}
+# Working only with red wine data for this exercise
+
+## Read in the dataset
+red_wine <- read_delim(here('winequality-red.csv'), delim = ';') %>%
+  # replace spaces with '.' in column names
+  rename_all(funs(make.names(.)))
+```
+
+##
+
+```{r pressure}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
