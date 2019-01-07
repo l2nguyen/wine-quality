@@ -7,30 +7,50 @@ output:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(include = FALSE, echo = FALSE)
+knitr::opts_chunk$set(include = FALSE, echo = FALSE, warning = FALSE)
 
 library(dplyr)
 library(readr)
 library(ggplot2)
 library(caret)
-library(here)
+library(corrplot)
 ```
 ## Introduction
-There are two datasets are related to red and white variants of the Portuguese "Vinho Verde" wine. We first want to explore the datasets and look at what chemical properties correlate with a higher wine quality taste. For the purposes of this exercise, I will focus on the dataset for red wines.
+The two [datasets](http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/) are related to red and white variants of the Portuguese "Vinho Verde" wine. The 'quality' column in the datasets is the score given by experts for wine quality. The wine quality score varies between 0 (very bad) and 10 (very excellent). The other 11 columns in the data are measured chemical properties of the wine. 
+
+For the purpose of this exercise, let's focus on the white wine dataset. The white wine dataset has *4898 observations*. We first want to explore the dataset and look at what chemical properties correlate with a higher wine quality grading for red wine. 
 
 ```{r load_data}
-# Working only with red wine data for this exercise
+url <- 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv'
 
-## Read in the dataset
-red_wine <- read_delim(here('winequality-red.csv'), delim = ';') %>%
+## Read in the red wine dataset
+white_wine <- read_delim(url, delim = ';') %>%
   # replace spaces with '.' in column names
   rename_all(funs(make.names(.)))
 ```
 
-##
+## Explore the Data
+### Wine Quality
+Looking at the distribution of wine quality ratings, there are many more average wines than bad or excellent wines.
 
-```{r pressure}
-plot(pressure)
+```{r eda, include = TRUE}
+# Distribution of wine quality ratings
+ggplot(white_wine, aes(x = factor(quality))) +
+  geom_bar(stat = "count", position = "dodge") +
+  labs(x = 'Wine Quality', title = "Distribution of White Wine Quality Ratings") +
+  theme_minimal()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Chemical Properties and Wine Quality
+
+White wine quality seems to be positively correlated with *alcohol* level and somehwat negatively correlated to *density*.
+
+```{r corr, include = TRUE}
+# Look at the correlation between variables
+correlations <- cor(white_wine, method = "pearson")
+
+corrplot(correlations, number.cex = .9, method = "square", 
+         hclust.method = "ward", order = "FPC",
+         type = "full", tl.cex=0.8, tl.col = "black")
+```
+
